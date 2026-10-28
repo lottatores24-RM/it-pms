@@ -36,12 +36,14 @@ class AppServiceProvider extends ServiceProvider
             $view->with('unreadNotificationsCount', Auth::user()?->unreadNotifications()->count() ?? 0);
         });
 
-        // Quick links to the user's unclosed projects in the sidebar.
+        // Quick links to the unclosed projects the user is a member of. Based on
+        // membership rather than visibility, so an Administrator only sees the
+        // projects they actually take part in.
         View::composer('layouts.navigation', function (ViewContract $view): void {
             $user = Auth::user();
 
             $view->with('sidebarProjects', $user === null ? collect() : Project::query()
-                ->visibleTo($user)
+                ->whereHas('projectMembers', fn ($query) => $query->where('user_id', $user->id))
                 ->where('status', '!=', ProjectStatus::Closed)
                 ->orderBy('name')
                 ->limit(6)

@@ -63,8 +63,8 @@ $adminLinks = array_filter($adminLinks, $visible);
             $currentProjectId = $routeProject instanceof App\Models\Project ? $routeProject->id : (int) $routeProject;
             $statusDots = ['blue' => 'bg-blue-400', 'green' => 'bg-emerald-400', 'yellow' => 'bg-amber-400', 'gray' => 'bg-gray-500'];
             @endphp
-            <div class="flex flex-col gap-1">
-                <p class="px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-gray-500">Proyek aktif</p>
+            <div id="sidebar-projects" class="flex flex-col gap-1">
+                <p class="px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-gray-500">Proyek saya</p>
                 @foreach ($sidebarProjects as $sidebarProject)
                     @php $isCurrent = $sidebarProject->id === $currentProjectId; @endphp
                     <a href="{{ route('projects.show', $sidebarProject) }}"
