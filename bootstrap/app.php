@@ -16,6 +16,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // A local reverse proxy such as Cloudflare Tunnel (cloudflared) connects from
+        // this machine and forwards the visitor's https scheme and host. Only loopback
+        // is trusted, so outside clients cannot fake these headers.
+        $middleware->trustProxies(at: ['127.0.0.1', '::1']);
+
         $middleware->web(append: [
             EnsureUserIsActive::class,
         ]);

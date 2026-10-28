@@ -167,6 +167,36 @@ composer run dev
 
 Jika muncul error *"Unable to locate file in Vite manifest"*, jalankan `npm run build` atau `npm run dev`.
 
+### Demo online sementara (Cloudflare Tunnel)
+
+Untuk presentasi, aplikasi di laptop bisa dibuka dari internet lewat link `https://….trycloudflare.com` tanpa hosting. Link hanya aktif selama laptop menyala dan perintahnya berjalan, dan berubah setiap kali dijalankan ulang.
+
+1. Pasang `cloudflared` (sekali saja):
+   ```bash
+   winget install --id Cloudflare.cloudflared
+   ```
+2. Siapkan database demo terpisah sekali saja, supaya data asli tidak ikut terbuka (Terminal Laragon / cmd):
+   ```bat
+   mysql -uroot -e "CREATE DATABASE IF NOT EXISTS it_pms_demo CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
+   set DB_DATABASE=it_pms_demo&& php artisan migrate:fresh --seed --force && php artisan db:seed --class=DemoSeeder --force
+   ```
+3. Jalankan aplikasi dengan database demo dan mode debug mati:
+   ```bat
+   set DB_DATABASE=it_pms_demo&& set APP_DEBUG=false&& php artisan serve --no-reload
+   ```
+   Di terminal PowerShell (misalnya terminal bawaan VS Code):
+   ```powershell
+   $env:DB_DATABASE='it_pms_demo'; $env:APP_DEBUG='false'; php artisan serve --no-reload
+   ```
+   Pengaturan ini menempel di terminal tersebut, jadi tutup terminalnya setelah demo.
+4. Di terminal lain, buka tunnel lalu bagikan link yang muncul:
+   ```bash
+   cloudflared tunnel --url http://localhost:8000
+   ```
+5. Selesai demo: tekan `Ctrl+C` di kedua terminal.
+
+Aplikasi sudah memercayai proxy lokal (`127.0.0.1`), jadi CSS, JS, dan link otomatis memakai alamat `https` dari tunnel. Akun demo memakai password `password`; jangan memakai database `it_pms` yang berisi data asli.
+
 ---
 
 ## Data demo & akun
