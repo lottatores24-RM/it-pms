@@ -11,7 +11,6 @@ Aplikasi web manajemen proyek TI untuk **PT Nusantara Digital Solutions (PT NDS)
 | Kelompok | 01 |
 | Project Manager | Riki Hamdan Sucipto |
 | Anggota tim | Riki Hamdan Sucipto, Mirco |
-| Dokumen spesifikasi | [Tujuan, Batasan, Alur & Database (PDF)](IT-PMS-Tujuan-Batasan-Alur-Database.pdf) |
 
 ---
 
