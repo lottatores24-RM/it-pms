@@ -38,7 +38,7 @@ $adminLinks = array_filter($adminLinks, $visible);
        class="fixed inset-y-0 left-0 z-50 flex w-64 -translate-x-full flex-col bg-gray-900 transition-transform duration-200 lg:translate-x-0 print:hidden">
     <div class="flex h-16 shrink-0 items-center justify-between gap-2 px-5">
         <a href="{{ route('dashboard') }}" class="flex items-center gap-2 text-white">
-            <x-application-logo class="h-8 w-auto fill-current text-indigo-400" />
+            <x-application-logo class="h-8 w-8" />
             <span class="text-lg font-semibold tracking-tight">IT-PMS</span>
         </a>
         <button type="button" @click="sidebarOpen = false" class="text-gray-400 hover:text-white lg:hidden" aria-label="Tutup menu">

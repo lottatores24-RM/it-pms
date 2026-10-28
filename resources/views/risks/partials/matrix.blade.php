@@ -7,7 +7,7 @@
 $ratings = App\Enums\RiskRating::cases();
 @endphp
 
-<div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-900/5 motion-safe:animate-fade-up" style="animation-delay: 600ms">
+<div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-900/5 motion-safe:animate-fade-up" style="animation-delay: 150ms">
     <h3 class="text-base font-semibold text-gray-900">Matriks risiko</h3>
     <p class="mt-0.5 text-sm text-gray-500">Risiko yang belum ditutup. Klik sel untuk memfilter.</p>
 

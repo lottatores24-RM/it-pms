@@ -15,10 +15,10 @@
 
             <div class="space-y-4 lg:order-1 lg:col-span-2">
                 <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-                    <form method="GET" action="{{ route('projects.risks.index', $project) }}" class="grid flex-1 grid-cols-2 gap-3 md:grid-cols-4">
+                    <form method="GET" action="{{ route('projects.risks.index', $project) }}" class="grid flex-1 grid-cols-2 gap-3 md:grid-cols-3">
                         <input type="hidden" name="probability" value="{{ $filters['probability'] }}">
                         <input type="hidden" name="impact" value="{{ $filters['impact'] }}">
-                        <div class="col-span-2 md:col-span-1">
+                        <div class="col-span-2 md:col-span-3">
                             <x-input-label for="search" value="Cari" class="sr-only" />
                             <x-text-input id="search" name="search" type="search" class="w-full" placeholder="Cari judul…" :value="$filters['search']" />
                         </div>
