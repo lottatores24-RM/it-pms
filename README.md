@@ -2,6 +2,8 @@
 
 Aplikasi web manajemen proyek TI untuk **PT Nusantara Digital Solutions (PT NDS)**, software house fiktif di Yogyakarta. Aplikasi ini mencakup perencanaan proyek, task dan milestone, Kanban, register risiko, issue, kolaborasi (komentar & lampiran), dashboard KPI, serta jejak audit lengkap.
 
+![Dashboard Project Manager](docs/screenshots/dashboard.png)
+
 | | |
 |---|---|
 | Kode proyek | IT-PMS-2026-01 |
@@ -9,23 +11,27 @@ Aplikasi web manajemen proyek TI untuk **PT Nusantara Digital Solutions (PT NDS)
 | Kelompok | 01 |
 | Project Manager | Riki Hamdan Sucipto |
 | Anggota tim | Riki Hamdan Sucipto, Mirco |
+| Dokumen spesifikasi | [Tujuan, Batasan, Alur & Database (PDF)](IT-PMS-Tujuan-Batasan-Alur-Database.pdf) |
 
 ---
 
 ## Daftar isi
 
 1. [Fitur](#fitur)
-2. [Teknologi](#teknologi)
-3. [Instalasi (Laragon / Windows)](#instalasi-laragon--windows)
-4. [Menjalankan aplikasi](#menjalankan-aplikasi)
-5. [Data demo & akun](#data-demo--akun)
-6. [Peran & hak akses](#peran--hak-akses)
-7. [Penjadwal (scheduler)](#penjadwal-scheduler)
-8. [Pengujian](#pengujian)
-9. [Backup & pemulihan](#backup--pemulihan)
-10. [Struktur kode](#struktur-kode)
-11. [Checklist produksi](#checklist-produksi)
-12. [Konvensi](#konvensi)
+2. [Tampilan](#tampilan)
+3. [Teknologi](#teknologi)
+4. [Instalasi (Laragon / Windows)](#instalasi-laragon--windows)
+5. [Menjalankan aplikasi](#menjalankan-aplikasi)
+6. [Data demo & akun](#data-demo--akun)
+7. [Cara EVM dihitung](#cara-evm-dihitung-fr-022)
+8. [Peran & hak akses](#peran--hak-akses)
+9. [Penjadwal (scheduler)](#penjadwal-scheduler)
+10. [Pengujian](#pengujian)
+11. [Backup & pemulihan](#backup--pemulihan)
+12. [Struktur kode](#struktur-kode)
+13. [Checklist produksi](#checklist-produksi)
+14. [Konvensi](#konvensi)
+15. [Alur kerja Git](#alur-kerja-git)
 
 ---
 
@@ -42,13 +48,24 @@ Aplikasi web manajemen proyek TI untuk **PT Nusantara Digital Solutions (PT NDS)
 | FR-012 | Milestone | CRUD, saran Completed otomatis, penanda Missed harian | ✅ |
 | FR-013 / 014 | Risiko | Skor = probabilitas × dampak otomatis, matriks 3×3, alur Open → Mitigated → Closed | ✅ |
 | FR-015 | Issue | Dilaporkan PM/TM, alur Open → In Progress → Resolved → Closed | ✅ |
+| FR-016 | Change request | Pengajuan & review perubahan | ✅ |
 | FR-017 | Kanban | Drag-and-drop (SortableJS), dropdown status di layar kecil | ✅ |
 | FR-018 | Komentar & lampiran | Pada proyek/task/issue; PDF, DOC/X, XLS/X, PNG, JPG, ZIP ≤ 10 MB | ✅ |
 | FR-019 | Activity log & notifikasi | Log append-only dengan filter & ekspor CSV; notifikasi in-app dengan badge | ✅ |
 | FR-020 | Dashboard KPI | Progress, distribusi task (Chart.js), milestone, task per anggota, ringkasan risiko | ✅ |
-| FR-016 | Change request | Pengajuan & review perubahan | ✅ |
 | FR-021 | Penutupan proyek | Checklist, catatan penutupan, laporan penutupan otomatis (snapshot) yang bisa dicetak/disimpan sebagai PDF | ✅ |
 | FR-022 | Dashboard EVM | PV, EV, AC, SPI, CPI, kurva S, dan interpretasinya dari effort points (rencana) dan effort aktual task | ✅ |
+
+---
+
+## Tampilan
+
+Tangkapan layar diambil dari data `DemoSeeder` pada layar 1440 × 900.
+
+| | |
+|---|---|
+| **Halaman masuk** ![Halaman masuk](docs/screenshots/login.png) | **Kanban board** ![Kanban board](docs/screenshots/kanban.png) |
+| **Dashboard EVM** ![Dashboard EVM](docs/screenshots/evm.png) | **Register & matriks risiko** ![Register risiko](docs/screenshots/risks.png) |
 
 ---
 
@@ -247,7 +264,13 @@ php artisan test                     # seluruh test
 php artisan test --filter=Kanban     # sebagian
 ```
 
-Untuk menjalankan test terhadap MySQL (sama seperti production), buat database `it_pms_test` sekali, lalu:
+Untuk menjalankan test terhadap MySQL (sama seperti production), buat database `it_pms_test` sekali, lalu jalankan dari *Terminal* Laragon (cmd):
+
+```bat
+set DB_CONNECTION=mysql&& set DB_DATABASE=it_pms_test&& php vendor\bin\phpunit
+```
+
+Di Git Bash, macOS, atau Linux:
 
 ```bash
 DB_CONNECTION=mysql DB_DATABASE=it_pms_test php vendor/bin/phpunit
@@ -272,20 +295,22 @@ Data aplikasi tersimpan di dua tempat, dan keduanya harus di-backup bersama:
 
 ### Backup
 
-Jalankan dari *Terminal* Laragon di folder proyek:
+Jalankan dari *Terminal* Laragon di folder proyek. Ganti `YYYY-MM-DD` dengan tanggal backup, misalnya `2026-10-28`:
 
-```bash
+```bat
 mkdir backup
-mysqldump -uroot --single-transaction --routines --triggers it_pms > backup\it_pms_2026-10-13.sql
-tar -czf backup\attachments_2026-10-13.tar.gz -C storage\app attachments
+mysqldump -uroot --single-transaction --routines --triggers it_pms > backup\it_pms_YYYY-MM-DD.sql
+tar -czf backup\attachments_YYYY-MM-DD.tar.gz -C storage\app attachments
 ```
+
+Folder `backup/` sudah masuk `.gitignore`, jadi hasil backup tidak ikut ter-commit.
 
 ### Pemulihan
 
-```bash
+```bat
 mysql -uroot -e "CREATE DATABASE IF NOT EXISTS it_pms CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
-mysql -uroot it_pms < backup\it_pms_2026-10-13.sql
-tar -xzf backup\attachments_2026-10-13.tar.gz -C storage\app
+mysql -uroot it_pms < backup\it_pms_YYYY-MM-DD.sql
+tar -xzf backup\attachments_YYYY-MM-DD.tar.gz -C storage\app
 php artisan optimize:clear
 ```
 
@@ -315,6 +340,7 @@ resources/
 ├── js/                      app.js, kanban.js, charts.js
 └── views/                   Blade per modul; errors/ untuk halaman 403/404/419/429/500/503
 tests/Feature, tests/Unit    Test per modul
+docs/screenshots/            Tangkapan layar untuk README
 ```
 
 Hal-hal penting dalam implementasi:
@@ -353,6 +379,30 @@ Selain itu, jalankan scheduler (lihat di atas), atur SMTP, dan jadwalkan backup.
   [task] add: alur status dengan konfirmasi Done
   [kanban] fix: kartu kembali ke kolom asal saat ditolak server
   ```
+
+---
+
+## Alur kerja Git
+
+Branch `main` selalu berisi versi yang sudah lolos test. Setiap fitur atau perbaikan dikerjakan di branch sendiri:
+
+```bash
+git switch main
+git pull                                   # ambil perubahan terbaru dari anggota lain
+git switch -c fitur/nama-fitur             # contoh: fitur/export-laporan, fix/filter-risiko
+```
+
+Setelah selesai:
+
+```bash
+php artisan test                           # pastikan semua test lulus
+vendor/bin/pint                            # rapikan format kode
+git add -A
+git commit -m "[module] action: deskripsi singkat"
+git push -u origin fitur/nama-fitur        # lalu buat Pull Request ke main
+```
+
+Anggota lain me-review Pull Request sebelum di-merge ke `main`. File `.env`, `vendor/`, `node_modules/`, `public/build/`, dan lampiran di `storage/` tidak pernah di-commit.
 
 ---
 
