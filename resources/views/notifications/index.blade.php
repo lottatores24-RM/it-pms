@@ -62,8 +62,14 @@
                     </form>
                 </li>
             @empty
-                <li class="px-6 py-12 text-center text-sm text-gray-500">
-                    {{ $onlyUnread ? 'Tidak ada notifikasi yang belum dibaca.' : 'Belum ada notifikasi.' }}
+                <li class="flex flex-col items-center px-6 py-14 text-center">
+                    <span class="flex h-12 w-12 items-center justify-center rounded-full bg-indigo-50 text-indigo-500" aria-hidden="true">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+                        </svg>
+                    </span>
+                    <p class="mt-3 text-sm font-medium text-gray-900">{{ $onlyUnread ? 'Tidak ada notifikasi yang belum dibaca.' : 'Belum ada notifikasi.' }}</p>
+                    <p class="mt-1 text-sm text-gray-500">Notifikasi task, issue, dan change request akan muncul di sini.</p>
                 </li>
             @endforelse
         </ul>

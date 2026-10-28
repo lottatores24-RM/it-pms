@@ -52,6 +52,7 @@
 </head>
 <body>
     <main>
+        <x-application-logo style="display: block; width: 2.5rem; height: 2.5rem; margin: 0 auto 1.5rem;" />
         <p class="code">@yield('code')</p>
         <h1>@yield('title')</h1>
         <p>@yield('message')</p>

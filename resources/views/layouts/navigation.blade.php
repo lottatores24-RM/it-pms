@@ -57,6 +57,27 @@ $adminLinks = array_filter($adminLinks, $visible);
             @endforeach
         </div>
 
+        @if ($sidebarProjects->isNotEmpty())
+            @php
+            $routeProject = request()->route('project');
+            $currentProjectId = $routeProject instanceof App\Models\Project ? $routeProject->id : (int) $routeProject;
+            $statusDots = ['blue' => 'bg-blue-400', 'green' => 'bg-emerald-400', 'yellow' => 'bg-amber-400', 'gray' => 'bg-gray-500'];
+            @endphp
+            <div class="flex flex-col gap-1">
+                <p class="px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-gray-500">Proyek aktif</p>
+                @foreach ($sidebarProjects as $sidebarProject)
+                    @php $isCurrent = $sidebarProject->id === $currentProjectId; @endphp
+                    <a href="{{ route('projects.show', $sidebarProject) }}"
+                       title="{{ $sidebarProject->name }}"
+                       @if ($isCurrent) aria-current="page" @endif
+                       class="group flex items-center gap-3 rounded-md px-3 py-2 text-sm transition {{ $isCurrent ? 'bg-gray-800 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
+                        <span class="h-2 w-2 shrink-0 rounded-full {{ $statusDots[$sidebarProject->status->color()] ?? 'bg-gray-500' }}" aria-hidden="true"></span>
+                        <span class="min-w-0 flex-1 truncate font-medium">{{ $sidebarProject->name }}</span>
+                    </a>
+                @endforeach
+            </div>
+        @endif
+
         @if (count($adminLinks) > 0)
             <div class="flex flex-col gap-1">
                 <p class="px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-gray-500">Administrasi</p>

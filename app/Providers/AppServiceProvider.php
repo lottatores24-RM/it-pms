@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Enums\ProjectStatus;
+use App\Models\Project;
 use App\Policies\RolePolicy;
 use Illuminate\Contracts\View\View as ViewContract;
 use Illuminate\Support\Facades\Auth;
@@ -32,6 +34,18 @@ class AppServiceProvider extends ServiceProvider
 
         View::composer('layouts.app', function (ViewContract $view): void {
             $view->with('unreadNotificationsCount', Auth::user()?->unreadNotifications()->count() ?? 0);
+        });
+
+        // Quick links to the user's unclosed projects in the sidebar.
+        View::composer('layouts.navigation', function (ViewContract $view): void {
+            $user = Auth::user();
+
+            $view->with('sidebarProjects', $user === null ? collect() : Project::query()
+                ->visibleTo($user)
+                ->where('status', '!=', ProjectStatus::Closed)
+                ->orderBy('name')
+                ->limit(6)
+                ->get(['id', 'name', 'code', 'status']));
         });
     }
 }
