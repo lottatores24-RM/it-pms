@@ -90,7 +90,10 @@ Tangkapan layar diambil dari data `DemoSeeder` pada layar 1440 × 900, dengan te
 
 **Prasyarat:** Laragon (PHP 8.3, MySQL 8.4), Composer, dan Node.js 24.
 
-1. **Ambil kode** ke folder `D:\laragon\www\it-pms` (lewat `git clone` atau salin folder).
+1. **Ambil kode** ke folder `www` Laragon, misalnya `C:\laragon\www\it-pms`, supaya Laragon otomatis membuat alamat `http://it-pms.test`:
+   ```bash
+   git clone <url-repo> it-pms
+   ```
 
 2. **Pasang dependensi:**
    ```bash
