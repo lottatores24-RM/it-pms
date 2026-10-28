@@ -113,7 +113,7 @@ class ActivityLogController extends Controller
             fputcsv($handle, ['Waktu', 'User', 'Aksi', 'Entitas', 'ID Entitas', 'Nama Entitas', 'ID Proyek', 'Deskripsi', 'Nilai Lama', 'Nilai Baru', 'IP']);
 
             $query->reorder()->lazyByIdDesc(500)->each(function (ActivityLog $log) use ($handle): void {
-                fputcsv($handle, [
+                fputcsv($handle, array_map($this->spreadsheetSafe(...), [
                     $log->created_at->format('Y-m-d H:i:s'),
                     $log->user_name,
                     $log->action->label(),
@@ -125,10 +125,23 @@ class ActivityLogController extends Controller
                     $log->old_values === null ? '' : json_encode($log->old_values, JSON_UNESCAPED_UNICODE),
                     $log->new_values === null ? '' : json_encode($log->new_values, JSON_UNESCAPED_UNICODE),
                     $log->ip_address,
-                ]);
+                ]));
             });
 
             fclose($handle);
         }, $filename, ['Content-Type' => 'text/csv; charset=UTF-8']);
+    }
+
+    /**
+     * Neutralise CSV/formula injection: names and titles are user input, and a
+     * cell starting with = + - @ (or a tab/CR) would run as a formula in Excel.
+     */
+    private function spreadsheetSafe(mixed $value): mixed
+    {
+        if (is_string($value) && $value !== '' && in_array($value[0], ['=', '+', '-', '@', "\t", "\r"], true)) {
+            return "'".$value;
+        }
+
+        return $value;
     }
 }

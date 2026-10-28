@@ -131,4 +131,15 @@ class ActivityLogViewerTest extends TestCase
         $this->assertStringContainsString('Task Ekspor', $csv);
         $this->assertStringContainsString('Pak Manajer', $csv);
     }
+
+    public function test_exported_cells_cannot_run_as_spreadsheet_formulas(): void
+    {
+        $this->log(ActivityAction::Create, Task::factory()->for($this->project)->create(['title' => '=HYPERLINK("http://evil.test","Klik")']), '+cmd|calc');
+
+        $csv = $this->actingAs($this->manager)->get(route('projects.activity.export', $this->project))->streamedContent();
+
+        $this->assertStringContainsString("\"'=HYPERLINK(\"\"http://evil.test\"\",\"\"Klik\"\")\"", $csv);
+        $this->assertStringContainsString("'+cmd|calc", $csv);
+        $this->assertDoesNotMatchRegularExpression('/(^|,)"?[=+@]/m', $csv);
+    }
 }
