@@ -16,6 +16,21 @@ export default {
         extend: {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                mono: ['"Geist Mono"', ...defaultTheme.fontFamily.mono],
+            },
+            // "Midnight Navy" surfaces for the personal dashboards (layout theme="night").
+            colors: {
+                night: {
+                    950: '#070c18',
+                    900: '#0b1220',
+                    850: '#101a2e',
+                    800: '#16213a',
+                    700: '#1c2842',
+                    600: '#2a3a5c',
+                    400: '#8593b0',
+                    200: '#c9d3e6',
+                    100: '#e6ecf7',
+                },
             },
             // Dashboard motion: short, eased entrances only. Always used behind
             // `motion-safe:` so "reduce motion" users get a static page. Fill mode

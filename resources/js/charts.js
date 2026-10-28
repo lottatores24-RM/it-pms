@@ -7,11 +7,19 @@ Chart.register(LineController, LineElement, PointElement, CategoryScale, LinearS
  * data-chart-data; every value is also on the page as text or in a table, so
  * nothing depends on the canvas or the tooltip alone.
  */
-const SURFACE = '#ffffff';
-const GRID = '#eef0f3';
-const AXIS = '#e5e7eb';
-const INK = '#111827';
-const TEXT_MUTED = '#6b7280';
+const PALETTES = {
+    light: {
+        surface: '#ffffff', grid: '#eef0f3', axis: '#e5e7eb', ink: '#111827', muted: '#6b7280', rule: '#9ca3af', hair: '#d1d5db',
+        tooltip: 'bg-white/95 ring-gray-900/10', tooltipTitle: 'text-gray-500', tooltipValue: 'text-gray-900', tooltipName: 'text-gray-500',
+    },
+    // Midnight Navy dashboards (data.theme = "night").
+    night: {
+        surface: '#101a2e', grid: 'rgba(255, 255, 255, 0.07)', axis: '#1c2842', ink: '#e6ecf7', muted: '#8593b0', rule: '#5b6b8c', hair: '#2a3a5c',
+        tooltip: 'bg-[#16213a]/95 ring-white/10', tooltipTitle: 'text-[#8593b0]', tooltipValue: 'text-[#e6ecf7]', tooltipName: 'text-[#8593b0]',
+    },
+};
+const paletteOf = (chart) => PALETTES[chart.canvas.dataset.theme] ?? PALETTES.light;
+const TEXT_MUTED = PALETTES.light.muted;
 const FONT = { family: 'Figtree, ui-sans-serif, system-ui, sans-serif', size: 12 };
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -41,7 +49,7 @@ const crosshair = {
         const x = active[0].element.x;
 
         ctx.save();
-        ctx.strokeStyle = '#d1d5db';
+        ctx.strokeStyle = paletteOf(chart).hair;
         ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.moveTo(x, chartArea.top);
@@ -64,9 +72,10 @@ const todayMarker = {
         const { ctx, chartArea } = chart;
         const x = chart.scales.x.getPixelForValue(options.index);
         const label = options.label ?? 'Hari ini';
+        const palette = paletteOf(chart);
 
         ctx.save();
-        ctx.strokeStyle = '#9ca3af';
+        ctx.strokeStyle = palette.rule;
         ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.moveTo(x, chartArea.top);
@@ -76,11 +85,11 @@ const todayMarker = {
         ctx.font = `600 11px ${FONT.family}`;
         const width = ctx.measureText(label).width + 14;
         const left = Math.min(Math.max(x - width / 2, chartArea.left), chartArea.right - width);
-        ctx.fillStyle = INK;
+        ctx.fillStyle = palette.ink;
         ctx.beginPath();
         ctx.roundRect(left, chartArea.top - 22, width, 18, 9);
         ctx.fill();
-        ctx.fillStyle = SURFACE;
+        ctx.fillStyle = palette.surface;
         ctx.textBaseline = 'middle';
         ctx.fillText(label, left + 7, chartArea.top - 13);
         ctx.restore();
@@ -93,12 +102,13 @@ const todayMarker = {
  */
 function htmlTooltip({ chart, tooltip }) {
     const host = chart.canvas.parentNode;
+    const palette = paletteOf(chart);
     let box = host.querySelector('[data-chart-tooltip]');
 
     if (!box) {
         box = document.createElement('div');
         box.dataset.chartTooltip = '';
-        box.className = 'pointer-events-none absolute z-10 min-w-[11rem] rounded-xl bg-white/95 px-3.5 py-3 text-xs shadow-xl ring-1 ring-gray-900/10 backdrop-blur transition-opacity duration-150 ease-out';
+        box.className = `pointer-events-none absolute z-10 min-w-[11rem] rounded-xl px-3.5 py-3 text-xs shadow-xl ring-1 backdrop-blur transition-opacity duration-150 ease-out ${palette.tooltip}`;
         host.appendChild(box);
     }
 
@@ -110,7 +120,7 @@ function htmlTooltip({ chart, tooltip }) {
     }
 
     const title = document.createElement('p');
-    title.className = 'mb-2 font-medium text-gray-500';
+    title.className = `mb-2 font-medium ${palette.tooltipTitle}`;
     title.textContent = tooltip.title?.[0] ?? '';
 
     const rows = points.map((point) => {
@@ -124,11 +134,11 @@ function htmlTooltip({ chart, tooltip }) {
         key.style.borderStyle = dataset.borderDash?.length ? 'dashed' : 'solid';
 
         const value = document.createElement('span');
-        value.className = 'text-sm font-semibold tabular-nums text-gray-900';
+        value.className = `text-sm font-semibold tabular-nums ${palette.tooltipValue}`;
         value.textContent = formatNumber(point.parsed.y);
 
         const name = document.createElement('span');
-        name.className = 'text-gray-500';
+        name.className = palette.tooltipName;
         name.textContent = dataset.label;
 
         row.append(key, value, name);
@@ -155,6 +165,9 @@ function htmlTooltip({ chart, tooltip }) {
  * EV/AC stop at the status date (null values leave the rest of the line out).
  */
 function evmCurveChart(canvas, data) {
+    const palette = PALETTES[data.theme] ?? PALETTES.light;
+    canvas.dataset.theme = data.theme ?? 'light';
+
     return new Chart(canvas, {
         type: 'line',
         data: {
@@ -186,7 +199,7 @@ function evmCurveChart(canvas, data) {
                 pointHitRadius: 12,
                 pointHoverRadius: 5,
                 pointHoverBackgroundColor: series.color,
-                pointHoverBorderColor: SURFACE,
+                pointHoverBorderColor: palette.surface,
                 pointHoverBorderWidth: 2,
             })),
         },
@@ -202,15 +215,15 @@ function evmCurveChart(canvas, data) {
             scales: {
                 x: {
                     grid: { display: false },
-                    border: { color: AXIS },
-                    ticks: { maxRotation: 0, autoSkip: true, maxTicksLimit: 6, padding: 8 },
+                    border: { color: palette.axis },
+                    ticks: { color: palette.muted, maxRotation: 0, autoSkip: true, maxTicksLimit: 6, padding: 8 },
                 },
                 y: {
                     beginAtZero: true,
-                    grid: { color: GRID, lineWidth: 1 },
+                    grid: { color: palette.grid, lineWidth: 1 },
                     border: { display: false },
-                    ticks: { padding: 10, maxTicksLimit: 6, callback: (value) => formatNumber(value) },
-                    title: { display: true, text: 'Effort point', color: TEXT_MUTED, font: { size: 11 } },
+                    ticks: { color: palette.muted, padding: 10, maxTicksLimit: 6, callback: (value) => formatNumber(value) },
+                    title: { display: true, text: 'Effort point', color: palette.muted, font: { size: 11 } },
                 },
             },
         },

@@ -151,6 +151,7 @@ class DashboardController extends Controller
             },
             'kpi' => [
                 'projects' => $managed->count(),
+                'waiting' => $waiting,
                 'pendingRequests' => $actions['requests']['count'],
                 'overdueTasks' => $actions['tasks']['count'],
                 'openRisks' => Risk::whereIn('project_id', $ids)
@@ -162,6 +163,7 @@ class DashboardController extends Controller
             'managed' => $managed,
             'portfolio' => $portfolio,
             'spi' => $portfolio->mapWithKeys(fn (Project $project) => [$project->id => $project->earnedValue()['spi']]),
+            'focus' => $this->focusEarnedValue($portfolio->sortByDesc('overdue_tasks_count')),
             'myTasks' => $this->myOpenTasks($user)->limit(5)->get(),
             'otherProjects' => $this->withCardCounts($user->projects()
                 ->wherePivot('role_in_project', '!=', ProjectRole::ProjectManager->value)
@@ -254,6 +256,7 @@ class DashboardController extends Controller
             ],
             'projects' => $projects,
             'nextMilestones' => $this->nextMilestones($ids),
+            'focus' => $this->focusEarnedValue($projects),
             'upcomingMilestones' => $upcoming->take(6),
             'recentlyDone' => Task::whereIn('project_id', $ids)
                 ->where('status', TaskStatus::Done)
@@ -263,6 +266,26 @@ class DashboardController extends Controller
                 ->limit(6)
                 ->get(),
         ];
+    }
+
+    /**
+     * EVM figures and S-curve of the first project with estimated work, shown
+     * as the focus chart on the Project Manager and Viewer dashboards.
+     *
+     * @param  Collection<int, Project>  $projects
+     * @return array{project: Project, evm: array<string, mixed>, curve: array<string, mixed>}|null
+     */
+    private function focusEarnedValue(Collection $projects): ?array
+    {
+        foreach ($projects->where('tasks_count', '>', 0) as $project) {
+            $evm = $project->earnedValue();
+
+            if ($evm['bac'] > 0) {
+                return ['project' => $project, 'evm' => $evm, 'curve' => $project->earnedValueCurve()];
+            }
+        }
+
+        return null;
     }
 
     /**

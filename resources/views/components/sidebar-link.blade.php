@@ -2,8 +2,8 @@
 
 @php
 $classes = $active
-    ? 'flex items-center gap-3 rounded-md bg-indigo-600 px-3 py-2 text-sm font-medium text-white'
-    : 'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-800 hover:text-white transition';
+    ? 'flex items-center gap-3 rounded-md bg-indigo-500/15 px-3 py-2 text-sm font-medium text-indigo-100 ring-1 ring-inset ring-indigo-400/20'
+    : 'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-night-200 hover:bg-white/5 hover:text-white transition';
 @endphp
 
 <a {{ $attributes->merge(['class' => $classes]) }} @if ($active) aria-current="page" @endif>

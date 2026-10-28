@@ -35,7 +35,7 @@ $adminLinks = array_filter($adminLinks, $visible);
 <div x-show="sidebarOpen" x-transition.opacity @click="sidebarOpen = false" class="fixed inset-0 z-40 bg-gray-900/60 lg:hidden" style="display: none;"></div>
 
 <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
-       class="fixed inset-y-0 left-0 z-50 flex w-64 -translate-x-full flex-col bg-gray-900 transition-transform duration-200 lg:translate-x-0 print:hidden">
+       class="fixed inset-y-0 left-0 z-50 flex w-64 -translate-x-full flex-col border-r border-white/5 bg-night-950 transition-transform duration-200 lg:translate-x-0 print:hidden">
     <div class="flex h-16 shrink-0 items-center justify-between gap-2 px-5">
         <a href="{{ route('dashboard') }}" class="flex items-center gap-2 text-white">
             <x-application-logo class="h-8 w-8" />
@@ -64,13 +64,13 @@ $adminLinks = array_filter($adminLinks, $visible);
             $statusDots = ['blue' => 'bg-blue-400', 'green' => 'bg-emerald-400', 'yellow' => 'bg-amber-400', 'gray' => 'bg-gray-500'];
             @endphp
             <div id="sidebar-projects" class="flex flex-col gap-1">
-                <p class="px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-gray-500">Proyek saya</p>
+                <p class="px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-night-400">Proyek saya</p>
                 @foreach ($sidebarProjects as $sidebarProject)
                     @php $isCurrent = $sidebarProject->id === $currentProjectId; @endphp
                     <a href="{{ route('projects.show', $sidebarProject) }}"
                        title="{{ $sidebarProject->name }}"
                        @if ($isCurrent) aria-current="page" @endif
-                       class="group flex items-center gap-3 rounded-md px-3 py-2 text-sm transition {{ $isCurrent ? 'bg-gray-800 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
+                       class="group flex items-center gap-3 rounded-md px-3 py-2 text-sm transition {{ $isCurrent ? 'bg-white/5 text-white' : 'text-night-400 hover:bg-white/5 hover:text-white' }}">
                         <span class="h-2 w-2 shrink-0 rounded-full {{ $statusDots[$sidebarProject->status->color()] ?? 'bg-gray-500' }}" aria-hidden="true"></span>
                         <span class="min-w-0 flex-1 truncate font-medium">{{ $sidebarProject->name }}</span>
                     </a>
@@ -80,7 +80,7 @@ $adminLinks = array_filter($adminLinks, $visible);
 
         @if (count($adminLinks) > 0)
             <div class="flex flex-col gap-1">
-                <p class="px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-gray-500">Administrasi</p>
+                <p class="px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-night-400">Administrasi</p>
                 @foreach ($adminLinks as $link)
                     <x-sidebar-link :href="route($link['route'])" :active="request()->routeIs($link['pattern'])" :icon="$icons[$link['icon']]">
                         {{ $link['label'] }}
@@ -90,7 +90,7 @@ $adminLinks = array_filter($adminLinks, $visible);
         @endif
     </nav>
 
-    <div class="border-t border-gray-800 px-5 py-4 text-xs text-gray-500">
+    <div class="border-t border-night-700 px-5 py-4 text-xs text-night-400">
         PT Nusantara Digital Solutions
     </div>
 </aside>

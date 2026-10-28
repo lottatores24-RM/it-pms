@@ -1,176 +1,141 @@
-<x-app-layout>
+<x-app-layout theme="night">
     <x-slot name="title">Dashboard</x-slot>
 
     <x-slot name="header">
-        <h2 class="truncate text-xl font-semibold leading-tight text-gray-800">Dashboard</h2>
+        <p class="truncate text-[13px] text-night-400">Dashboard <span class="mx-1.5 text-night-600">/</span><span class="text-night-100">Ringkasan proyek</span></p>
     </x-slot>
 
     @php
-    $tabs = [
-        'requests' => ['label' => 'CR perlu review', 'icon' => 'arrows', 'tone' => 'bg-violet-50 text-violet-600 ring-violet-600/10'],
-        'issues' => ['label' => 'Issue siap ditutup', 'icon' => 'check-circle', 'tone' => 'bg-emerald-50 text-emerald-600 ring-emerald-600/10'],
-        'tasks' => ['label' => 'Task terlambat', 'icon' => 'clock', 'tone' => 'bg-rose-50 text-rose-600 ring-rose-600/10'],
-        'milestones' => ['label' => 'Milestone 7 hari', 'icon' => 'flag', 'tone' => 'bg-amber-50 text-amber-600 ring-amber-600/10'],
+    $types = [
+        'requests' => ['label' => 'CR', 'filter' => 'CR', 'tone' => 'violet'],
+        'tasks' => ['label' => 'Late', 'filter' => 'Terlambat', 'tone' => 'rose'],
+        'issues' => ['label' => 'Issue', 'filter' => 'Issue', 'tone' => 'emerald'],
+        'milestones' => ['label' => 'Due', 'filter' => 'Milestone', 'tone' => 'amber'],
     ];
-    $activeTab = collect(array_keys($tabs))->first(fn (string $key) => $actions[$key]['count'] > 0) ?? 'requests';
-    $more = fn (string $key) => $actions[$key]['count'] - $actions[$key]['items']->count();
-    $row = 'group flex items-center gap-3 rounded-xl px-3 py-2.5 transition duration-200 hover:bg-gray-50';
+    $inbox = collect();
+    foreach ($actions['requests']['items'] as $item) {
+        $inbox->push(['type' => 'requests', 'title' => $item->title, 'href' => route('projects.change-requests.show', [$item->project, $item]),
+            'meta' => "{$item->project->code} · {$item->requester->name} · {$item->status->value}", 'aside' => 'menunggu '.$item->created_at->diffForHumans(null, true)]);
+    }
+    foreach ($actions['tasks']['items'] as $item) {
+        $inbox->push(['type' => 'tasks', 'title' => $item->title, 'href' => route('projects.tasks.show', [$item->project, $item]),
+            'meta' => "{$item->project->code} · {$item->status->value}", 'aside' => abs((int) today()->diffInDays($item->due_date, false)).' hari', 'alert' => true]);
+    }
+    foreach ($actions['issues']['items'] as $item) {
+        $inbox->push(['type' => 'issues', 'title' => $item->title, 'href' => route('projects.issues.show', [$item->project, $item]),
+            'meta' => "{$item->project->code} · resolved oleh ".($item->assignee?->name ?? 'tim'), 'aside' => 'siap ditutup']);
+    }
+    foreach ($actions['milestones']['items'] as $item) {
+        $daysLeft = (int) today()->diffInDays($item->target_date, false);
+        $inbox->push(['type' => 'milestones', 'title' => $item->name, 'href' => route('projects.milestones.show', [$item->project, $item]),
+            'meta' => "{$item->project->code} · target ".$item->target_date->format('d·m·Y'), 'aside' => $daysLeft === 0 ? 'hari ini' : "{$daysLeft} hari lagi"]);
+    }
+    $byStatus = $managed->countBy(fn ($project) => $project->status->value);
+    $waitingParts = collect([
+        $kpi['pendingRequests'] ? "{$kpi['pendingRequests']} CR" : null,
+        $kpi['overdueTasks'] ? "{$kpi['overdueTasks']} terlambat" : null,
+        $actions['issues']['count'] ? "{$actions['issues']['count']} issue" : null,
+        $actions['milestones']['count'] ? "{$actions['milestones']['count']} milestone" : null,
+    ])->filter();
     @endphp
 
     <div class="mx-auto max-w-7xl space-y-6">
-        <x-dashboard.hero :greeting="$greeting" :name="$user->name" :role="$roleName" :summary="$summary">
-            <x-slot name="actions">
-                <x-dashboard.hero-action :href="route('projects.create')" icon="plus" primary>Buat proyek</x-dashboard.hero-action>
-                <x-dashboard.hero-action :href="route('projects.index')" icon="folder">Semua proyek</x-dashboard.hero-action>
-            </x-slot>
-        </x-dashboard.hero>
+        @include('dashboard.home.partials.night-header', ['actions' => [
+            ['href' => route('projects.create'), 'label' => 'Proyek baru', 'icon' => 'plus', 'primary' => true],
+            ['href' => route('projects.index'), 'label' => 'Semua proyek', 'icon' => 'folder'],
+        ]])
 
-        <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
-            <x-stat-tile label="Proyek yang saya kelola" :value="$kpi['projects']" icon="folder" hint="Belum ditutup" :href="route('projects.index')" delay="80" />
-            <x-stat-tile label="Change request menunggu" :value="$kpi['pendingRequests']" icon="arrows" tone="violet" hint="Submitted / Under Review" delay="140" />
-            <x-stat-tile label="Task terlambat" :value="$kpi['overdueTasks']" icon="check-circle" tone="emerald" :alert="$kpi['overdueTasks'] > 0"
-                         :hint="$kpi['overdueTasks'] > 0 ? 'Di proyek yang saya kelola' : 'Semua task sesuai tenggat'" delay="200" />
-            <x-stat-tile label="Risiko High / Critical" :value="$kpi['openRisks']" icon="shield" tone="amber" :alert="$kpi['openRisks'] > 0"
-                         :hint="$kpi['openRisks'] > 0 ? 'Masih terbuka, perlu dipantau' : 'Tidak ada risiko besar terbuka'" delay="260" />
+        <div class="grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-night-700 bg-night-700 lg:grid-cols-4 motion-safe:animate-fade-up" style="animation-delay: 60ms">
+            <x-night.kpi label="Proyek dikelola" :value="$kpi['projects']" :href="route('projects.index')"
+                         :hint="$byStatus->map(fn ($count, $status) => $count.' '.$status)->join(' · ') ?: 'Belum ada proyek aktif'" />
+            <x-night.kpi label="Task terlambat" :value="$kpi['overdueTasks']" :tone="$kpi['overdueTasks'] > 0 ? 'bad' : 'good'"
+                         :hint="$kpi['overdueTasks'] > 0 ? 'Di proyek yang Anda kelola' : 'Semua sesuai tenggat'" />
+            <x-night.kpi label="Risiko High / Critical" :value="$kpi['openRisks']" :tone="$kpi['openRisks'] > 0 ? 'warn' : 'good'"
+                         :hint="$kpi['openRisks'] > 0 ? 'Masih terbuka' : 'Tidak ada risiko besar'" />
+            <x-night.kpi label="Menunggu Anda" :value="$kpi['waiting']" tone="accent"
+                         :hint="$waitingParts->join(' · ') ?: 'Tidak ada yang mendesak'" />
         </div>
 
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
-            <div class="space-y-6 lg:col-span-2">
-                <x-dashboard.card title="Perlu tindakan Anda" description="Keputusan dan tindak lanjut di proyek yang Anda kelola" delay="320" flush>
-                    <div x-data="{ tab: '{{ $activeTab }}' }">
-                        <div class="grid grid-cols-2 gap-2 border-b border-gray-100 p-3 sm:grid-cols-4" role="tablist" aria-label="Kategori tindakan">
-                            @foreach ($tabs as $key => $tab)
-                                <button type="button" role="tab" id="tab-{{ $key }}" aria-controls="panel-{{ $key }}"
-                                        :aria-selected="(tab === '{{ $key }}').toString()" @click="tab = '{{ $key }}'"
-                                        class="flex items-center gap-3 rounded-xl p-2.5 text-left ring-1 ring-inset transition duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                        :class="tab === '{{ $key }}' ? 'bg-indigo-50/70 ring-indigo-300 shadow-sm' : 'ring-gray-200 hover:bg-gray-50 hover:ring-gray-300'">
-                                    <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ring-1 ring-inset {{ $tab['tone'] }}">
-                                        <x-icon :name="$tab['icon']" class="h-4 w-4" />
-                                    </span>
-                                    <span class="min-w-0">
-                                        <span class="block text-lg font-semibold leading-tight tabular-nums text-gray-900">{{ $actions[$key]['count'] }}</span>
-                                        <span class="block text-xs leading-snug transition duration-200" :class="tab === '{{ $key }}' ? 'font-medium text-indigo-700' : 'text-gray-500'">{{ $tab['label'] }}</span>
-                                    </span>
-                                </button>
-                            @endforeach
-                        </div>
-
-                        @foreach (array_keys($tabs) as $key)
-                            <div id="panel-{{ $key }}" role="tabpanel" aria-labelledby="tab-{{ $key }}" class="p-3"
-                                 x-show="tab === '{{ $key }}'" @if ($key !== $activeTab) x-cloak @endif
-                                 x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-1" x-transition:enter-end="opacity-100 translate-y-0">
-                                @if ($actions[$key]['items']->isEmpty())
-                                    <x-dashboard.empty icon="check-circle" title="Tidak ada yang menunggu" message="Bagian ini akan terisi saat ada hal yang perlu Anda tindak lanjuti." class="m-3" />
-                                @else
-                                    <ul class="space-y-1">
-                                        @foreach ($actions[$key]['items'] as $item)
-                                            <li>
-                                                @switch($key)
-                                                    @case('requests')
-                                                        <a href="{{ route('projects.change-requests.show', [$item->project, $item]) }}" class="{{ $row }}">
-                                                            <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-violet-50 text-violet-600 ring-1 ring-inset ring-violet-600/10"><x-icon name="arrows" class="h-4 w-4" /></span>
-                                                            <span class="min-w-0 flex-1">
-                                                                <span class="block truncate text-sm font-medium text-gray-900 group-hover:text-indigo-600">{{ $item->title }}</span>
-                                                                <span class="block truncate text-xs text-gray-500">{{ $item->project->code }} · diajukan {{ $item->requester->name }} · {{ $item->created_at->diffForHumans() }}</span>
-                                                            </span>
-                                                            <span class="flex shrink-0 flex-col items-end gap-1">
-                                                                <x-badge :color="$item->status->color()">{{ $item->status->value }}</x-badge>
-                                                                <span class="text-xs text-gray-500">Prioritas {{ $item->priority->value }}</span>
-                                                            </span>
-                                                        </a>
-                                                        @break
-                                                    @case('issues')
-                                                        <a href="{{ route('projects.issues.show', [$item->project, $item]) }}" class="{{ $row }}">
-                                                            <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 ring-1 ring-inset ring-emerald-600/10"><x-icon name="check-circle" class="h-4 w-4" /></span>
-                                                            <span class="min-w-0 flex-1">
-                                                                <span class="block truncate text-sm font-medium text-gray-900 group-hover:text-indigo-600">{{ $item->title }}</span>
-                                                                <span class="block truncate text-xs text-gray-500">{{ $item->project->code }} · resolved oleh {{ $item->assignee?->name ?? 'tim' }} · {{ $item->updated_at->diffForHumans() }}</span>
-                                                            </span>
-                                                            <x-badge :color="$item->severity->color()" class="shrink-0">{{ $item->severity->value }}</x-badge>
-                                                        </a>
-                                                        @break
-                                                    @case('tasks')
-                                                        <x-dashboard.task-row :task="$item" />
-                                                        @break
-                                                    @case('milestones')
-                                                        @php $daysLeft = (int) today()->diffInDays($item->target_date, false); @endphp
-                                                        <a href="{{ route('projects.milestones.show', [$item->project, $item]) }}" class="{{ $row }}">
-                                                            <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-amber-50 text-amber-600 ring-1 ring-inset ring-amber-600/10"><x-icon name="flag" class="h-4 w-4" /></span>
-                                                            <span class="min-w-0 flex-1">
-                                                                <span class="block truncate text-sm font-medium text-gray-900 group-hover:text-indigo-600">{{ $item->name }}</span>
-                                                                <span class="block truncate text-xs text-gray-500">{{ $item->project->code }} · target {{ $item->target_date->translatedFormat('d M Y') }}</span>
-                                                            </span>
-                                                            <span class="shrink-0 text-xs font-medium text-amber-700">{{ $daysLeft === 0 ? 'Hari ini' : $daysLeft.' hari lagi' }}</span>
-                                                        </a>
-                                                        @break
-                                                @endswitch
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                    @if ($more($key) > 0)
-                                        <p class="px-3 pt-2 text-xs text-gray-500">dan {{ $more($key) }} lainnya di halaman proyek.</p>
-                                    @endif
-                                @endif
-                            </div>
-                        @endforeach
-                    </div>
-                </x-dashboard.card>
-
-                <section class="space-y-4">
-                    <div class="flex items-end justify-between gap-4 motion-safe:animate-fade-up" style="animation-delay: 380ms">
-                        <div>
-                            <h2 class="text-base font-semibold text-gray-900">Portofolio proyek saya</h2>
-                            <p class="text-sm text-gray-500">Progress, kesehatan jadwal, dan SPI dari EVM</p>
-                        </div>
-                        @if ($managed->count() > $portfolio->count())
-                            <a href="{{ route('projects.index') }}" class="group inline-flex items-center gap-1 text-sm font-medium text-indigo-600 hover:text-indigo-500">
-                                Semua <x-icon name="arrow-right" class="h-4 w-4 transition duration-200 group-hover:translate-x-0.5" />
-                            </a>
-                        @endif
-                    </div>
-                    @if ($portfolio->isEmpty())
-                        <x-dashboard.empty icon="folder" title="Belum ada proyek yang Anda kelola" message="Buat proyek baru; Anda otomatis menjadi Project Manager-nya." class="bg-white" />
-                    @else
-                        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                            @foreach ($portfolio as $project)
-                                <x-dashboard.project-card :project="$project" :spi="$spi->get($project->id)" :delay="440 + $loop->index * 80" />
-                            @endforeach
-                        </div>
-                    @endif
-                </section>
+            <div class="lg:col-span-2 motion-safe:animate-fade-up" style="animation-delay: 120ms">
+                @if ($focus)
+                    <x-night.evm-chart :focus="$focus" class="h-full" />
+                @else
+                    <x-night.panel title="Kurva S" description="Muncul setelah task di proyek Anda punya effort points." class="h-full">
+                        <x-night.empty icon="chart" title="Belum ada data EVM" message="Isi effort points pada task agar PV, EV, dan AC bisa dihitung." />
+                    </x-night.panel>
+                @endif
             </div>
 
-            <div class="space-y-6">
-                <x-dashboard.card title="Task saya" description="Task yang ditugaskan langsung kepada Anda" delay="360" flush>
-                    <div class="p-3">
-                        @forelse ($myTasks as $task)
-                            <x-dashboard.task-row :task="$task" />
-                        @empty
-                            <x-dashboard.empty icon="check-circle" title="Tidak ada task pribadi" class="m-3" />
-                        @endforelse
+            <x-night.panel title="Inbox" description="Keputusan dan tindak lanjut Anda" :count="$kpi['waiting']" flush
+                           class="motion-safe:animate-fade-up" style="animation-delay: 180ms" x-data="{ filter: 'all' }">
+                @if ($inbox->isEmpty())
+                    <div class="p-5"><x-night.empty icon="check-circle" title="Inbox kosong" message="Tidak ada CR, task terlambat, atau issue yang menunggu Anda." /></div>
+                @else
+                    <div class="flex flex-wrap gap-1 border-b border-night-700 px-5 py-2.5" role="group" aria-label="Saring inbox">
+                        <button type="button" @click="filter = 'all'" :aria-pressed="(filter === 'all').toString()"
+                                class="rounded px-2 py-0.5 text-xs transition" :class="filter === 'all' ? 'bg-white/10 text-white' : 'text-night-400 hover:text-night-100'">Semua</button>
+                        @foreach ($types as $key => $type)
+                            @if ($actions[$key]['count'] > 0)
+                                <button type="button" @click="filter = '{{ $key }}'" :aria-pressed="(filter === '{{ $key }}').toString()"
+                                        class="rounded px-2 py-0.5 text-xs transition" :class="filter === '{{ $key }}' ? 'bg-white/10 text-white' : 'text-night-400 hover:text-night-100'">
+                                    {{ $type['filter'] }} <span class="font-mono">{{ $actions[$key]['count'] }}</span>
+                                </button>
+                            @endif
+                        @endforeach
                     </div>
-                </x-dashboard.card>
+                    <ul class="max-h-80 divide-y divide-night-700 overflow-y-auto">
+                        @foreach ($inbox as $entry)
+                            <li x-show="filter === 'all' || filter === '{{ $entry['type'] }}'">
+                                <a href="{{ $entry['href'] }}" class="group block px-5 py-3 transition hover:bg-white/[0.03]">
+                                    <span class="flex items-center gap-2">
+                                        <x-night.tag :tone="$types[$entry['type']]['tone']">{{ $types[$entry['type']]['label'] }}</x-night.tag>
+                                        <span class="truncate text-[13px] font-medium text-night-100 group-hover:text-indigo-200">{{ $entry['title'] }}</span>
+                                    </span>
+                                    <span class="mt-1 flex items-center justify-between gap-3 text-xs text-night-400">
+                                        <span class="truncate">{{ $entry['meta'] }}</span>
+                                        <span @class(['shrink-0 font-mono text-[11px]', 'text-rose-300' => $entry['alert'] ?? false])>{{ $entry['aside'] }}</span>
+                                    </span>
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
+            </x-night.panel>
+        </div>
 
-                @include('dashboard.home.partials.notifications', ['delay' => 420])
+        <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+            <div class="space-y-6 lg:col-span-2 motion-safe:animate-fade-up" style="animation-delay: 240ms">
+                @include('dashboard.home.partials.night-projects', [
+                    'title' => 'Portofolio proyek saya',
+                    'projects' => $portfolio,
+                    'spi' => $spi,
+                    'emptyTitle' => 'Belum ada proyek yang Anda kelola',
+                    'emptyMessage' => 'Buat proyek baru; Anda otomatis menjadi Project Manager-nya.',
+                ])
 
                 @if ($otherProjects->isNotEmpty())
-                    <x-dashboard.card title="Proyek lain yang saya ikuti" description="Sebagai Team Member atau Viewer" delay="480" flush>
-                        <ul class="divide-y divide-gray-100">
-                            @foreach ($otherProjects as $project)
-                                @php $progress = $project->tasks_count > 0 ? (int) round($project->done_tasks_count / $project->tasks_count * 100) : 0; @endphp
-                                <li>
-                                    <a href="{{ route('projects.show', $project) }}" class="group flex items-center gap-3 px-6 py-3 transition duration-200 hover:bg-gray-50">
-                                        <x-progress-ring :value="$progress" :label="'Progress '.$project->name" size="h-10 w-10" text-size="text-[10px]" />
-                                        <span class="min-w-0 flex-1">
-                                            <span class="block truncate text-sm font-medium text-gray-900 group-hover:text-indigo-600">{{ $project->name }}</span>
-                                            <span class="block text-xs text-gray-500">{{ $project->code }} · Anda: {{ $project->pivot->role_in_project->value }}</span>
-                                        </span>
-                                    </a>
-                                </li>
-                            @endforeach
-                        </ul>
-                    </x-dashboard.card>
+                    @include('dashboard.home.partials.night-projects', [
+                        'title' => 'Proyek lain yang saya ikuti',
+                        'projects' => $otherProjects,
+                        'spi' => null,
+                        'showRole' => true,
+                    ])
                 @endif
+            </div>
+
+            <div class="space-y-6 motion-safe:animate-fade-up" style="animation-delay: 300ms">
+                <x-night.panel title="Task saya" description="Ditugaskan langsung kepada Anda" :count="$myTasks->count()" flush>
+                    <div class="divide-y divide-night-700">
+                        @forelse ($myTasks as $task)
+                            <x-night.task-row :task="$task" />
+                        @empty
+                            <div class="p-5"><x-night.empty icon="check-circle" title="Tidak ada task pribadi" /></div>
+                        @endforelse
+                    </div>
+                </x-night.panel>
+
+                @include('dashboard.home.partials.night-notifications')
             </div>
         </div>
     </div>

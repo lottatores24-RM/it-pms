@@ -197,6 +197,29 @@ class DashboardTest extends TestCase
             ->assertViewHas('kpi', fn ($kpi) => $kpi['projects'] === 1 && $kpi['pendingRequests'] === 1);
     }
 
+    public function test_project_manager_dashboard_shows_the_s_curve_of_a_project_with_estimates(): void
+    {
+        $this->task(['effort_points' => 5, 'due_date' => '2026-12-01']);
+
+        $this->actingAs($this->manager)
+            ->get(route('dashboard'))
+            ->assertOk()
+            ->assertSee('data-chart="evm-curve"', false)
+            ->assertViewHas('focus', fn ($focus) => $focus['project']->is($this->project) && $focus['evm']['bac'] === 5.0);
+    }
+
+    public function test_dashboard_skips_the_s_curve_while_no_task_has_effort_points(): void
+    {
+        $this->task(['effort_points' => null]);
+
+        $this->actingAs($this->manager)
+            ->get(route('dashboard'))
+            ->assertOk()
+            ->assertViewHas('focus', null)
+            ->assertDontSee('data-chart="evm-curve"', false)
+            ->assertSee('Belum ada data EVM');
+    }
+
     public function test_viewer_sees_followed_projects_and_milestones_due_within_thirty_days(): void
     {
         $viewer = User::factory()->create()->assignRole('Viewer');
