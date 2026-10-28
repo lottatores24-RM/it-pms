@@ -64,4 +64,31 @@ Alpine.data('countUp', (target) => ({
     },
 }));
 
+// A thin progress bar runs under the top bar while the next page loads
+// (styles in resources/css/night.css). Downloads and new tabs are skipped.
+const startNavigation = () => document.body.classList.add('is-navigating');
+window.addEventListener('pageshow', () => document.body.classList.remove('is-navigating'));
+
+document.addEventListener('click', (event) => {
+    const link = event.target.closest('a[href]');
+    if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+        return;
+    }
+
+    const url = new URL(link.href, window.location.href);
+    const samePageAnchor = url.pathname === window.location.pathname && url.search === window.location.search && url.hash !== '';
+    if (link.target === '_blank' || link.hasAttribute('download') || url.origin !== window.location.origin || samePageAnchor
+        || /\/(download|export)\b/.test(url.pathname) || link.getAttribute('href').startsWith('javascript:')) {
+        return;
+    }
+
+    startNavigation();
+});
+
+document.addEventListener('submit', (event) => {
+    if (!event.defaultPrevented && event.target instanceof HTMLFormElement && event.target.method.toLowerCase() !== 'dialog') {
+        startNavigation();
+    }
+});
+
 Alpine.start();

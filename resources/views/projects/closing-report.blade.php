@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout theme="light">
     <x-slot name="title">Laporan Penutupan · {{ $project->name }}</x-slot>
 
     <x-slot name="header">

@@ -18,8 +18,9 @@
             align-items: center;
             justify-content: center;
             padding: 1.5rem;
-            background: #f3f4f6;
-            color: #111827;
+            background: #0b1220;
+            color: #e6ecf7;
+            color-scheme: dark;
             font-family: Figtree, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
         }
         main {
@@ -27,13 +28,15 @@
             max-width: 28rem;
             padding: 2.5rem 2rem;
             text-align: center;
-            background: #ffffff;
+            background: #101a2e;
+            border: 1px solid #1c2842;
             border-radius: 0.75rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 24px 48px -24px rgba(0, 0, 0, 0.6);
+            animation: rise 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
         }
-        .code { margin: 0; font-size: 3.5rem; font-weight: 700; letter-spacing: -0.03em; color: #4f46e5; }
+        .code { margin: 0; font-size: 3.5rem; font-weight: 700; letter-spacing: -0.03em; color: #818cf8; }
         h1 { margin: 0.5rem 0 0; font-size: 1.25rem; font-weight: 600; }
-        p { margin: 0.75rem 0 0; color: #4b5563; line-height: 1.6; font-size: 0.9375rem; }
+        p { margin: 0.75rem 0 0; color: #8593b0; line-height: 1.6; font-size: 0.9375rem; }
         .actions { margin-top: 2rem; display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; }
         a {
             display: inline-block;
@@ -43,11 +46,13 @@
             font-weight: 600;
             text-decoration: none;
         }
-        .primary { background: #4f46e5; color: #ffffff; }
-        .primary:hover { background: #4338ca; }
-        .secondary { border: 1px solid #d1d5db; color: #374151; }
-        .secondary:hover { background: #f9fafb; }
-        footer { margin-top: 2rem; font-size: 0.75rem; color: #9ca3af; }
+        .primary { background: #6366f1; color: #ffffff; }
+        .primary:hover { background: #818cf8; }
+        .secondary { border: 1px solid #2a3a5c; color: #c9d3e6; }
+        .secondary:hover { background: rgba(255, 255, 255, 0.04); }
+        footer { margin-top: 2rem; font-size: 0.75rem; color: #6b7a99; }
+        @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+        @media (prefers-reduced-motion: reduce) { main { animation: none; } }
     </style>
 </head>
 <body>

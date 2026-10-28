@@ -16,11 +16,12 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     @php
-    // theme="night" switches the page to the dark "Midnight Navy" surface used by the personal dashboards.
-    $night = $attributes->get('theme') === 'night';
+    // Every page uses the dark "Midnight Navy" theme; theme="light" opts out (e.g. the printable closing report).
+    $night = $attributes->get('theme', 'night') !== 'light';
     @endphp
     <body class="font-sans antialiased">
-        <div x-data="{ sidebarOpen: false }" @class(['min-h-screen print:bg-white', 'bg-night-900 text-night-100' => $night, 'bg-gray-100' => ! $night])>
+        <div x-data="{ sidebarOpen: false }" @class(['min-h-screen print:bg-white', 'theme-night bg-night-900 text-night-100' => $night, 'bg-gray-100' => ! $night])>
+            <div class="page-progress" aria-hidden="true"></div>
             @include('layouts.navigation')
 
             <div class="lg:pl-64 print:pl-0">
@@ -101,7 +102,7 @@
                 </div>
 
                 <!-- Page Content -->
-                <main class="px-4 py-6 sm:px-6 lg:px-8 print:p-0">
+                <main class="page-enter px-4 py-6 sm:px-6 lg:px-8 print:p-0">
                     {{ $slot }}
                 </main>
             </div>

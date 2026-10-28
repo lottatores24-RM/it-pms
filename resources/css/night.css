@@ -1,0 +1,181 @@
+/*
+ * Midnight Navy theme: base surfaces, form controls and motion for every page
+ * wrapped in .theme-night. Colour utilities are remapped in night-colors.css.
+ * Screen only, so printed pages keep the light layout.
+ */
+@media screen {
+    .theme-night {
+        color-scheme: dark;
+    }
+
+    /* Form controls (@tailwindcss/forms paints them white by default). */
+    .theme-night :is(input:not([type='checkbox'], [type='radio'], [type='range'], [type='file'], [type='hidden']), select, textarea) {
+        background-color: #0b1220;
+        border-color: #2a3a5c;
+        color: #e6ecf7;
+        transition: border-color 150ms ease, box-shadow 150ms ease, background-color 150ms ease;
+    }
+
+    .theme-night :is(input, textarea)::placeholder {
+        color: #5b6b8c;
+    }
+
+    .theme-night :is(input, select, textarea):hover:not(:focus, :disabled) {
+        border-color: #3b4c70;
+    }
+
+    .theme-night :is(input, select, textarea):focus {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+    }
+
+    .theme-night :is(input, select, textarea):disabled {
+        background-color: #101a2e;
+        color: #6b7a99;
+    }
+
+    .theme-night select option {
+        background-color: #101a2e;
+        color: #e6ecf7;
+    }
+
+    .theme-night :is(input[type='checkbox'], input[type='radio']) {
+        background-color: #0b1220;
+        border-color: #3b4c70;
+    }
+
+    .theme-night input[type='file']::file-selector-button {
+        background-color: rgba(99, 102, 241, 0.15);
+        color: #c7d2fe;
+    }
+
+    /* Cards: shadows vanish on navy, so a hairline edge takes their place. */
+    .theme-night .bg-white:is(.shadow-sm, .shadow, .shadow-md) {
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 1px 3px rgba(0, 0, 0, 0.35);
+    }
+
+    /* Light gradients (EVM gauge cards, member avatars). */
+    .theme-night .from-gray-50\/80 {
+        --tw-gradient-from: rgba(255, 255, 255, 0.04) var(--tw-gradient-from-position);
+        --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+    }
+
+    .theme-night .to-white {
+        --tw-gradient-to: rgba(255, 255, 255, 0) var(--tw-gradient-to-position);
+    }
+
+    .theme-night .from-indigo-100 {
+        --tw-gradient-from: rgba(99, 102, 241, 0.28) var(--tw-gradient-from-position);
+        --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+    }
+
+    .theme-night .to-violet-100 {
+        --tw-gradient-to: rgba(139, 92, 246, 0.28) var(--tw-gradient-to-position);
+    }
+
+    /* Thin scrollbars that sit quietly on the navy surfaces. */
+    .theme-night * {
+        scrollbar-width: thin;
+        scrollbar-color: #2a3a5c transparent;
+    }
+}
+
+/*
+ * Motion: short and eased, never on reduced-motion setups.
+ */
+@media screen and (prefers-reduced-motion: no-preference) {
+    /* Page sections rise in one after another. */
+    .theme-night .page-enter > * > * {
+        animation: night-rise 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    }
+
+    .theme-night .page-enter > * > :nth-child(2) { animation-delay: 50ms; }
+    .theme-night .page-enter > * > :nth-child(3) { animation-delay: 100ms; }
+    .theme-night .page-enter > * > :nth-child(4) { animation-delay: 150ms; }
+    .theme-night .page-enter > * > :nth-child(5) { animation-delay: 200ms; }
+    .theme-night .page-enter > * > :nth-child(n + 6) { animation-delay: 250ms; }
+
+    /* Clickable cards lift and pick up an indigo edge. */
+    .theme-night a:is(.rounded-lg, .rounded-xl, .rounded-2xl, .sm\:rounded-lg):is(.bg-white, .shadow-sm) {
+        transition: transform 250ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 250ms ease, background-color 200ms ease;
+    }
+
+    .theme-night a:is(.rounded-lg, .rounded-xl, .rounded-2xl, .sm\:rounded-lg):is(.bg-white, .shadow-sm):hover {
+        transform: translateY(-3px);
+        box-shadow: 0 0 0 1px rgba(129, 140, 248, 0.35), 0 16px 32px -16px rgba(79, 70, 229, 0.55);
+    }
+
+    /* Primary buttons glow on hover and press in on click. */
+    .theme-night :is(a, button).bg-indigo-600,
+    .theme-night :is(a, button).bg-indigo-500 {
+        transition: background-color 150ms ease, box-shadow 200ms ease, transform 120ms ease;
+    }
+
+    .theme-night :is(a, button).bg-indigo-600:hover,
+    .theme-night :is(a, button).bg-indigo-500:hover {
+        box-shadow: 0 6px 20px -6px rgba(99, 102, 241, 0.65);
+    }
+
+    .theme-night :is(a, button, summary):active {
+        transform: scale(0.98);
+    }
+
+    /* Table rows light up softly. */
+    .theme-night tbody tr {
+        transition: background-color 150ms ease;
+    }
+
+    .theme-night tbody tr:hover {
+        background-color: rgba(255, 255, 255, 0.025);
+    }
+
+    /* Progress bars fill from the left when the page opens. */
+    .theme-night .rounded-full > .rounded-full:is(.bg-indigo-600, .bg-indigo-500, .bg-indigo-400) {
+        transform-origin: left;
+        animation: night-grow 0.9s cubic-bezier(0.16, 1, 0.3, 1) 150ms backwards;
+    }
+
+    /* Sidebar icons nudge toward the content on hover. */
+    .theme-night aside nav a svg {
+        transition: transform 200ms ease;
+    }
+
+    .theme-night aside nav a:hover svg {
+        transform: translateX(2px);
+    }
+}
+
+/* Thin indigo bar under the top bar while the next page loads (see app.js). */
+.page-progress {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 60;
+    height: 2px;
+    transform: scaleX(0);
+    transform-origin: left;
+    background: linear-gradient(90deg, #6366f1, #a78bfa, #34d399);
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.7);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.is-navigating .page-progress {
+    opacity: 1;
+    animation: night-progress 8s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes night-rise {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes night-grow {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+}
+
+@keyframes night-progress {
+    0% { transform: scaleX(0); }
+    20% { transform: scaleX(0.45); }
+    100% { transform: scaleX(0.9); }
+}

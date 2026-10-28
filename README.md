@@ -60,7 +60,7 @@ Aplikasi web manajemen proyek TI untuk **PT Nusantara Digital Solutions (PT NDS)
 
 ## Tampilan
 
-Tangkapan layar diambil dari data `DemoSeeder` pada layar 1440 × 900.
+Tangkapan layar diambil dari data `DemoSeeder` pada layar 1440 × 900, dengan tema Midnight Navy.
 
 | | |
 |---|---|
@@ -374,6 +374,7 @@ Selain itu, jalankan scheduler (lihat di atas), atur SMTP, dan jadwalkan backup.
 
 - Kode mengikuti PSR-12 dan diformat dengan Laravel Pint.
 - Validasi selalu di **Form Request**, otorisasi selalu di **Policy**, dan setiap operasi CRUD serta perubahan status dicatat di activity log.
+- Tampilan memakai tema gelap **Midnight Navy**. Kelas warna terang Tailwind (mis. `bg-white`, `text-gray-500`, `bg-green-50`) dipetakan ke palet gelap oleh `resources/css/night-colors.css`; dasar form dan animasinya ada di `resources/css/night.css`. Jika memakai kelas warna terang baru, tambahkan pemetaannya di sana. Halaman cetak (laporan penutupan) memakai `<x-app-layout theme="light">`.
 - Format pesan commit: `[module] action: deskripsi singkat`, contoh:
   ```
   [task] add: alur status dengan konfirmasi Done

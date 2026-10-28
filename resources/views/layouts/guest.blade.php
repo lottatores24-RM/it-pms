@@ -16,7 +16,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans text-gray-900 antialiased">
-        <div class="flex min-h-screen bg-white">
+        <div class="theme-night flex min-h-screen bg-night-900 text-night-100">
             <!-- Brand panel (large screens) -->
             <aside class="relative isolate hidden w-1/2 max-w-2xl flex-col justify-between overflow-hidden bg-gradient-to-br from-indigo-600 via-indigo-600 to-violet-700 p-12 text-white lg:flex">
                 <div class="pointer-events-none absolute -right-24 -top-24 -z-10 h-96 w-96 rounded-full bg-white/10 blur-3xl" aria-hidden="true"></div>
@@ -50,11 +50,11 @@
             </aside>
 
             <!-- Form -->
-            <main class="flex flex-1 flex-col items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:bg-white">
+            <main class="page-enter flex flex-1 flex-col items-center justify-center px-4 py-12 sm:px-6">
                 <div class="w-full max-w-sm">
                     <a href="{{ url('/') }}" class="mb-8 flex items-center gap-3 lg:hidden">
                         <x-application-logo class="h-10 w-10" />
-                        <span class="text-xl font-semibold tracking-tight text-gray-900">IT-PMS</span>
+                        <span class="text-xl font-semibold tracking-tight text-white">IT-PMS</span>
                     </a>
 
                     @isset($heading)
@@ -66,7 +66,7 @@
                         </div>
                     @endisset
 
-                    <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-900/5 sm:p-8 lg:p-0 lg:shadow-none lg:ring-0">
+                    <div class="rounded-2xl border border-night-700 bg-night-850 p-6 shadow-xl shadow-black/20 sm:p-8">
                         {{ $slot }}
                     </div>
                 </div>

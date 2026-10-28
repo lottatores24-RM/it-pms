@@ -12,7 +12,7 @@ $asOf = Illuminate\Support\Carbon::parse($evm['as_of']);
 
 // Series colours: validated categorical slots 1–3 (PV, EV, AC); the legend,
 // the metric keys and the chart all use the same three.
-$colors = ['pv' => '#2a78d6', 'ev' => '#eb6834', 'ac' => '#1baf7a'];
+$colors = ['pv' => '#94a3b8', 'ev' => '#f0844f', 'ac' => '#34d399'];
 
 $indices = [
     [
@@ -52,6 +52,7 @@ $gapMessages = array_filter([
 ]);
 
 $chart = $evmCurve ? [
+    'theme' => 'night',
     'labels' => $evmCurve['labels'],
     'todayIndex' => ($i = array_search($asOf->translatedFormat('d M Y'), $evmCurve['labels'], true)) === false ? null : $i,
     'series' => [

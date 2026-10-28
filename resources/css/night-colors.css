@@ -1,0 +1,134 @@
+/*
+ * Midnight Navy theme (generated). Every page wrapped in .theme-night maps the
+ * light colour utilities used by the Blade views onto the dark palette, so all
+ * modules share one look without dark: variants on each element. Screen only:
+ * printed pages (closing report) keep their light colours.
+ */
+@media screen {
+    .theme-night .bg-white { background-color: #101a2e; }
+    .theme-night .hover\:bg-white:hover { background-color: #101a2e; }
+    .theme-night .bg-white\/95 { background-color: rgba(16, 26, 46, 0.95); }
+    .theme-night .bg-gray-50 { background-color: rgba(255, 255, 255, 0.03); }
+    .theme-night .hover\:bg-gray-50:hover { background-color: rgba(255, 255, 255, 0.03); }
+    .theme-night .focus\:bg-gray-50:focus { background-color: rgba(255, 255, 255, 0.03); }
+    .theme-night .disabled\:bg-gray-50:disabled { background-color: rgba(255, 255, 255, 0.03); }
+    .theme-night .hover\:bg-gray-50\/70:hover { background-color: rgba(255, 255, 255, 0.03); }
+    .theme-night .bg-gray-50\/80 { background-color: rgba(255, 255, 255, 0.03); }
+    .theme-night .bg-gray-100 { background-color: rgba(255, 255, 255, 0.06); }
+    .theme-night .hover\:bg-gray-100:hover { background-color: rgba(255, 255, 255, 0.06); }
+    .theme-night .focus\:bg-gray-100:focus { background-color: rgba(255, 255, 255, 0.06); }
+    .theme-night .disabled\:bg-gray-100:disabled { background-color: rgba(255, 255, 255, 0.06); }
+    .theme-night .bg-gray-200 { background-color: rgba(255, 255, 255, 0.1); }
+    .theme-night .bg-gray-200\/70 { background-color: rgba(255, 255, 255, 0.08); }
+    .theme-night .bg-gray-300 { background-color: #2a3a5c; }
+    .theme-night .bg-gray-400 { background-color: #4b5b7c; }
+    .theme-night .text-gray-900 { color: #e6ecf7; }
+    .theme-night .hover\:text-gray-900:hover { color: #e6ecf7; }
+    .theme-night .text-gray-800 { color: #e6ecf7; }
+    .theme-night .hover\:text-gray-800:hover { color: #e6ecf7; }
+    .theme-night .focus\:text-gray-800:focus { color: #e6ecf7; }
+    .theme-night .text-gray-700 { color: #c9d3e6; }
+    .theme-night .hover\:text-gray-700:hover { color: #c9d3e6; }
+    .theme-night .focus\:text-gray-700:focus { color: #c9d3e6; }
+    .theme-night .text-gray-600 { color: #a7b3cc; }
+    .theme-night .text-gray-500 { color: #8593b0; }
+    .theme-night .disabled\:text-gray-500:disabled { color: #8593b0; }
+    .theme-night .text-gray-400 { color: #6b7a99; }
+    .theme-night .text-gray-300 { color: #4b5b7c; }
+    .theme-night .divide-gray-50 > :not([hidden]) ~ :not([hidden]) { border-color: #16213a; }
+    .theme-night .border-gray-100 { border-color: #1c2842; }
+    .theme-night .divide-gray-100 > :not([hidden]) ~ :not([hidden]) { border-color: #1c2842; }
+    .theme-night .border-gray-200 { border-color: #1c2842; }
+    .theme-night .divide-gray-200 > :not([hidden]) ~ :not([hidden]) { border-color: #1c2842; }
+    .theme-night .border-gray-300 { border-color: #2a3a5c; }
+    .theme-night .hover\:border-gray-300:hover { border-color: #2a3a5c; }
+    .theme-night .focus\:border-gray-300:focus { border-color: #2a3a5c; }
+    .theme-night .border-gray-400 { border-color: #3b4c70; }
+    .theme-night .ring-gray-900\/5 { --tw-ring-color: rgba(255, 255, 255, 0.06); }
+    .theme-night .ring-gray-900\/10 { --tw-ring-color: rgba(255, 255, 255, 0.1); }
+    .theme-night .ring-gray-100 { --tw-ring-color: rgba(255, 255, 255, 0.06); }
+    .theme-night .ring-gray-200 { --tw-ring-color: rgba(255, 255, 255, 0.1); }
+    .theme-night .ring-gray-300 { --tw-ring-color: rgba(255, 255, 255, 0.14); }
+    .theme-night .ring-gray-500\/10 { --tw-ring-color: rgba(255, 255, 255, 0.08); }
+    .theme-night .ring-gray-500\/20 { --tw-ring-color: rgba(255, 255, 255, 0.12); }
+    .theme-night .ring-black { --tw-ring-color: rgba(255, 255, 255, 0.1); }
+    .theme-night .bg-indigo-50 { background-color: rgba(99, 102, 241, 0.12); }
+    .theme-night .bg-indigo-50\/50 { background-color: rgba(99, 102, 241, 0.1); }
+    .theme-night .bg-indigo-50\/60 { background-color: rgba(99, 102, 241, 0.12); }
+    .theme-night .bg-indigo-100 { background-color: rgba(99, 102, 241, 0.18); }
+    .theme-night .focus\:bg-indigo-100:focus { background-color: rgba(99, 102, 241, 0.18); }
+    .theme-night .text-indigo-600 { color: #a5b4fc; }
+    .theme-night .hover\:text-indigo-600:hover { color: #a5b4fc; }
+    .theme-night .group:hover .group-hover\:text-indigo-600 { color: #a5b4fc; }
+    .theme-night .text-indigo-700 { color: #a5b4fc; }
+    .theme-night .hover\:text-indigo-800:hover { color: #a5b4fc; }
+    .theme-night .focus\:text-indigo-800:focus { color: #a5b4fc; }
+    .theme-night .text-indigo-500 { color: #a5b4fc; }
+    .theme-night .hover\:text-indigo-500:hover { color: #a5b4fc; }
+    .theme-night .group:hover .group-hover\:text-indigo-500 { color: #a5b4fc; }
+    .theme-night .ring-indigo-600\/10 { --tw-ring-color: rgba(99, 102, 241, 0.3); }
+    .theme-night .ring-indigo-600\/20 { --tw-ring-color: rgba(99, 102, 241, 0.3); }
+    .theme-night .hover\:ring-indigo-500\/20:hover { --tw-ring-color: rgba(99, 102, 241, 0.3); }
+    .theme-night .stroke-indigo-100 { stroke: rgba(99, 102, 241, 0.2); }
+    .theme-night .bg-violet-50 { background-color: rgba(139, 92, 246, 0.12); }
+    .theme-night .text-violet-600 { color: #c4b5fd; }
+    .theme-night .ring-violet-600\/10 { --tw-ring-color: rgba(139, 92, 246, 0.3); }
+    .theme-night .bg-red-50 { background-color: rgba(239, 68, 68, 0.12); }
+    .theme-night .hover\:bg-red-50:hover { background-color: rgba(239, 68, 68, 0.12); }
+    .theme-night .bg-red-300 { background-color: rgba(239, 68, 68, 0.42); }
+    .theme-night .text-red-600 { color: #fca5a5; }
+    .theme-night .text-red-700 { color: #fca5a5; }
+    .theme-night .text-red-800 { color: #fca5a5; }
+    .theme-night .hover\:text-red-800:hover { color: #fca5a5; }
+    .theme-night .text-red-950 { color: #fca5a5; }
+    .theme-night .border-red-300 { border-color: rgba(239, 68, 68, 0.35); }
+    .theme-night .ring-red-600\/20 { --tw-ring-color: rgba(239, 68, 68, 0.3); }
+    .theme-night .ring-red-200 { --tw-ring-color: rgba(239, 68, 68, 0.3); }
+    .theme-night .bg-rose-50 { background-color: rgba(244, 63, 94, 0.12); }
+    .theme-night .bg-rose-50\/40 { background-color: rgba(244, 63, 94, 0.08); }
+    .theme-night .text-rose-600 { color: #fda4af; }
+    .theme-night .text-rose-700 { color: #fda4af; }
+    .theme-night .ring-rose-600\/10 { --tw-ring-color: rgba(244, 63, 94, 0.3); }
+    .theme-night .ring-rose-600\/20 { --tw-ring-color: rgba(244, 63, 94, 0.3); }
+    .theme-night .bg-green-50 { background-color: rgba(34, 197, 94, 0.12); }
+    .theme-night .bg-green-100 { background-color: rgba(34, 197, 94, 0.18); }
+    .theme-night .text-green-600 { color: #86efac; }
+    .theme-night .text-green-700 { color: #86efac; }
+    .theme-night .text-green-800 { color: #86efac; }
+    .theme-night .hover\:text-green-800:hover { color: #86efac; }
+    .theme-night .text-green-900 { color: #86efac; }
+    .theme-night .ring-green-600\/20 { --tw-ring-color: rgba(34, 197, 94, 0.3); }
+    .theme-night .bg-emerald-50 { background-color: rgba(16, 185, 129, 0.12); }
+    .theme-night .text-emerald-600 { color: #6ee7b7; }
+    .theme-night .text-emerald-700 { color: #6ee7b7; }
+    .theme-night .ring-emerald-600\/10 { --tw-ring-color: rgba(16, 185, 129, 0.3); }
+    .theme-night .ring-emerald-600\/20 { --tw-ring-color: rgba(16, 185, 129, 0.3); }
+    .theme-night .bg-yellow-50 { background-color: rgba(234, 179, 8, 0.12); }
+    .theme-night .bg-yellow-100 { background-color: rgba(234, 179, 8, 0.18); }
+    .theme-night .text-yellow-800 { color: #fde047; }
+    .theme-night .text-yellow-900 { color: #fde047; }
+    .theme-night .ring-yellow-600\/20 { --tw-ring-color: rgba(234, 179, 8, 0.3); }
+    .theme-night .bg-amber-50 { background-color: rgba(245, 158, 11, 0.12); }
+    .theme-night .bg-amber-300 { background-color: rgba(245, 158, 11, 0.42); }
+    .theme-night .text-amber-600 { color: #fcd34d; }
+    .theme-night .text-amber-800 { color: #fcd34d; }
+    .theme-night .text-amber-900 { color: #fcd34d; }
+    .theme-night .ring-amber-600\/10 { --tw-ring-color: rgba(245, 158, 11, 0.3); }
+    .theme-night .ring-amber-600\/20 { --tw-ring-color: rgba(245, 158, 11, 0.3); }
+    .theme-night .bg-orange-50 { background-color: rgba(249, 115, 22, 0.12); }
+    .theme-night .bg-orange-100 { background-color: rgba(249, 115, 22, 0.18); }
+    .theme-night .bg-orange-200 { background-color: rgba(249, 115, 22, 0.28); }
+    .theme-night .text-orange-600 { color: #fdba74; }
+    .theme-night .text-orange-700 { color: #fdba74; }
+    .theme-night .text-orange-800 { color: #fdba74; }
+    .theme-night .text-orange-900 { color: #fdba74; }
+    .theme-night .border-orange-100 { border-color: rgba(249, 115, 22, 0.35); }
+    .theme-night .ring-orange-600\/20 { --tw-ring-color: rgba(249, 115, 22, 0.3); }
+    .theme-night .bg-blue-50 { background-color: rgba(59, 130, 246, 0.12); }
+    .theme-night .text-blue-700 { color: #93c5fd; }
+    .theme-night .text-blue-800 { color: #93c5fd; }
+    .theme-night .ring-blue-600\/20 { --tw-ring-color: rgba(59, 130, 246, 0.3); }
+    .theme-night .bg-sky-50 { background-color: rgba(14, 165, 233, 0.12); }
+    .theme-night .text-sky-600 { color: #7dd3fc; }
+    .theme-night .ring-sky-600\/10 { --tw-ring-color: rgba(14, 165, 233, 0.3); }
+}
